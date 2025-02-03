@@ -1,6 +1,6 @@
-# Tailwind CSS Website
+# Personal Website
 
-A modern website template built with HTML and Tailwind CSS.
+My personal website built with HTML and Tailwind CSS.
 
 ## Setup Instructions
 
