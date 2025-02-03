@@ -91,9 +91,9 @@
     <main class="pt-24 pb-16 px-6">
         <div class="max-w-4xl mx-auto content-wrapper">
             <!-- Search and Sort Section -->
-            <div class="flex justify-between items-center mb-8">
+            <div class="flex justify-between items-center mb-8 gap-4">
                 <div class="relative flex-grow max-w-lg">
-                    <input type="text" id="search" placeholder="search projects..." 
+                    <input type="text" id="search" placeholder="search posts..." 
                            class="w-full px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 bg-white/50">
                     <button class="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,6 +101,9 @@
                         </svg>
                     </button>
                 </div>
+                <select id="tag-filter" class="px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 bg-white/50">
+                    <option value="">all tags</option>
+                </select>
                 <select id="sort" class="px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 bg-white/50">
                     <option value="date-desc">Newest First</option>
                     <option value="date-asc">Oldest First</option>
@@ -126,181 +129,96 @@
     </main>
 
     <script>
-        // State
-        let currentPage = 1;
-        const postsPerPage = 10;
-        let allPosts = [];
-        let filteredPosts = [];
+        let allTags = new Set();
 
-        // Functions
-        async function fetchPostMetadata(url) {
-            try {
-                const response = await fetch(url);
-                const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-                // Extract metadata from the article
-                const title = doc.querySelector('h1').textContent;
-                const description = doc.querySelector('.prose p').textContent.trim();
-                const tags = Array.from(doc.querySelectorAll('header .bg-gray-100'))
-                    .map(tag => tag.textContent.trim());
-                const dateStr = doc.querySelector('header .text-gray-600').textContent
-                    .replace('Published on ', '');
-                
-                return {
-                    title,
-                    description,
-                    tags,
-                    date: new Date(dateStr).toISOString().split('T')[0],
-                    url
-                };
-            } catch (error) {
-                console.error(`Error fetching metadata from ${url}:`, error);
-                return null;
-            }
-        }
-
+        // Function to load and display posts
         async function loadPosts() {
             try {
-                const postsDir = 'posts/';
-                const posts = [];
+                const response = await fetch('/api/posts');
+                const posts = await response.json();
                 
-                // For now, manually list the posts until we set up directory listing
-                const postFiles = [
-                    'posts/propositional-logic.html'
-                    // Add new posts here as they're created
-                ];
+                const postsContainer = document.getElementById('posts-container');
+                postsContainer.innerHTML = '';
 
-                // Fetch metadata from each post
-                for (const url of postFiles) {
-                    const metadata = await fetchPostMetadata(url);
-                    if (metadata) {
-                        posts.push(metadata);
-                    }
+                // Collect all unique tags
+                allTags.clear();
+                posts.forEach(post => {
+                    post.tags.forEach(tag => allTags.add(tag));
+                });
+
+                // Update tag filter dropdown
+                const tagFilter = document.getElementById('tag-filter');
+                tagFilter.innerHTML = '<option value="">all tags</option>';
+                Array.from(allTags).sort().forEach(tag => {
+                    const option = document.createElement('option');
+                    option.value = tag;
+                    option.textContent = tag;
+                    tagFilter.appendChild(option);
+                });
+
+                for (const post of posts) {
+                    const article = document.createElement('div');
+                    article.className = 'blog-post p-6 border border-gray-200 rounded-lg bg-white/50 hover:bg-gray-50 transition-all';
+                    article.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="text-lg mb-1">${post.title}</h4>
+                                <p class="text-sm text-gray-500">${post.date}</p>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    ${post.tags.map(tag => `
+                                        <span class="text-xs bg-gray-100 rounded-md px-2 py-1">${tag}</span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div>
+                                <a href="${post.url}" class="text-gray-600 hover:text-blue-600">Read →</a>
+                            </div>
+                        </div>
+                    `;
+                    postsContainer.appendChild(article);
                 }
 
-                allPosts = posts;
-                filteredPosts = [...posts];
-                
-                // Initial sort by date
-                sortPosts();
-                
-                // Hide loading message
-                document.getElementById('loading-message').style.display = 'none';
+                // Remove loading message if it exists
+                const loadingMessage = document.getElementById('loading-message');
+                if (loadingMessage) {
+                    loadingMessage.remove();
+                }
             } catch (error) {
                 console.error('Error loading posts:', error);
-                document.getElementById('loading-message').innerHTML = 
-                    '<p class="text-red-500">Error loading posts. Please try again later.</p>';
+                const postsContainer = document.getElementById('posts-container');
+                postsContainer.innerHTML = '<div class="text-center py-8 text-red-600">Error loading posts</div>';
             }
         }
 
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            const day = date.getDate();
-            const month = date.toLocaleString('default', { month: 'long' });
-            const year = date.getFullYear();
-            return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
-        }
-
-        function getOrdinalSuffix(day) {
-            if (day > 3 && day < 21) return 'th';
-            switch (day % 10) {
-                case 1: return 'st';
-                case 2: return 'nd';
-                case 3: return 'rd';
-                default: return 'th';
-            }
-        }
-
-        function renderPosts() {
-            const startIndex = (currentPage - 1) * postsPerPage;
-            const endIndex = startIndex + postsPerPage;
-            const container = document.getElementById('posts-container');
-            container.innerHTML = '';
-
-            if (filteredPosts.length === 0) {
-                container.innerHTML = '<p class="text-center py-8">No posts found.</p>';
-                return;
-            }
-
-            filteredPosts.slice(startIndex, endIndex).forEach(post => {
-                const article = document.createElement('article');
-                article.className = 'blog-post border-b border-gray-100 pb-8';
-                article.innerHTML = `
-                    <h2 class="text-xl mb-1">
-                        <a href="${post.url}" class="hover:underline">${post.title}</a>
-                    </h2>
-                    <p class="text-sm text-gray-600 mb-2">${post.description}</p>
-                    <div class="flex items-center space-x-4 text-sm">
-                        <span class="text-gray-500">tagged with</span>
-                        ${post.tags.map(tag => `<span class="px-2 py-1 bg-gray-100 rounded-md">${tag}</span>`).join('')}
-                    </div>
-                    <div class="mt-2 text-sm text-gray-400">${formatDate(post.date)}</div>
-                `;
-                container.appendChild(article);
-            });
-
-            updatePagination();
-        }
-
-        function updatePagination() {
-            const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-            document.getElementById('current-page').textContent = currentPage;
-            document.getElementById('total-pages').textContent = totalPages;
-            document.getElementById('prev-page').disabled = currentPage === 1;
-            document.getElementById('next-page').disabled = currentPage === totalPages;
-        }
-
+        // Function to filter posts based on search input and selected tag
         function filterPosts() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            filteredPosts = allPosts.filter(post => 
-                post.title.toLowerCase().includes(searchTerm) ||
-                post.description.toLowerCase().includes(searchTerm) ||
-                post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-            );
-            currentPage = 1;
-            sortPosts();
+            const selectedTag = document.getElementById('tag-filter').value.toLowerCase();
+            const postsContainer = document.getElementById('posts-container');
+            const articles = postsContainer.getElementsByClassName('blog-post');
+            
+            for (const article of articles) {
+                const title = article.querySelector('h4').textContent.toLowerCase();
+                const tags = Array.from(article.querySelectorAll('.bg-gray-100'))
+                    .map(tag => tag.textContent.toLowerCase());
+                
+                const matchesSearch = title.includes(searchTerm) || 
+                    tags.some(tag => tag.includes(searchTerm));
+                const matchesTag = !selectedTag || tags.includes(selectedTag);
+                
+                article.style.display = (matchesSearch && matchesTag) ? 'block' : 'none';
+            }
         }
 
-        function sortPosts() {
-            const sortValue = document.getElementById('sort').value;
-            switch(sortValue) {
-                case 'date-desc':
-                    filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    break;
-                case 'date-asc':
-                    filteredPosts.sort((a, b) => new Date(a.date) - new Date(b.date));
-                    break;
-                case 'title-asc':
-                    filteredPosts.sort((a, b) => a.title.localeCompare(b.title));
-                    break;
-                case 'title-desc':
-                    filteredPosts.sort((a, b) => b.title.localeCompare(a.title));
-                    break;
-            }
-            renderPosts();
-        }
-
-        // Event Listeners
-        document.getElementById('search').addEventListener('input', filterPosts);
-        document.getElementById('sort').addEventListener('change', sortPosts);
-        document.getElementById('prev-page').addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                renderPosts();
-            }
-        });
-        document.getElementById('next-page').addEventListener('click', () => {
-            const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderPosts();
-            }
-        });
-
-        // Initial load
+        // Load posts when page loads
         loadPosts();
+
+        // Add search and tag filter functionality
+        const searchInput = document.getElementById('search');
+        const tagFilter = document.getElementById('tag-filter');
+        
+        searchInput.addEventListener('input', filterPosts);
+        tagFilter.addEventListener('change', filterPosts);
     </script>
 </body>
 </html>

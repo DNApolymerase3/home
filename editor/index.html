@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Articles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    'mono': ['DM Mono', 'monospace'],
+                },
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        html {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            scroll-behavior: smooth;
+        }
+
+        .nav-item {
+            opacity: 0;
+            animation: popAndJiggle 0.5s ease-out forwards;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item:hover {
+            transform: translate3d(0, -2px, 15px);
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item:nth-child(1) { animation-delay: 0.3s; }
+        .nav-item:nth-child(2) { animation-delay: 0.8s; }
+        .nav-item:nth-child(3) { animation-delay: 1.3s; }
+
+        .content-wrapper {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes popAndJiggle {
+            0% { transform: translate3d(0, 20px, 0); opacity: 0; }
+            40% { transform: translate3d(0, -4px, 0); }
+            60% { transform: translate3d(0, 2px, 0); }
+            80% { transform: translate3d(0, -1px, 0); }
+            100% { transform: translate3d(0, 0, 0); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .blog-post {
+            transition: transform 0.2s ease;
+        }
+
+        .blog-post:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-white text-black min-h-screen font-mono">
+    <nav class="fixed w-full bg-white/80 backdrop-blur-sm z-50">
+        <div class="max-w-6xl mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="space-x-12">
+                    <a href="/" class="nav-item inline-block">home</a>
+                    <a href="/resume.html" class="nav-item inline-block">resume</a>
+                    <a href="/blog.html" class="nav-item inline-block">notes</a>
+                    <a href="/library.html" class="nav-item inline-block">library</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 pb-16 px-6">
+        <div class="max-w-4xl mx-auto content-wrapper">
+            <div class="flex justify-between items-center mb-8">
+                <div class="relative flex-grow max-w-lg">
+                    <input type="text" id="search" placeholder="search articles..." 
+                           class="w-full px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 bg-white/50">
+                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex items-center gap-4">
+                    <label class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" id="show-deleted" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Show Deleted
+                    </label>
+                    <a href="editor.html" class="px-4 py-2 border border-gray-200 rounded-md hover:bg-gray-50">
+                        New Article
+                    </a>
+                </div>
+            </div>
+
+            <!-- Articles List -->
+            <div class="space-y-4" id="active-articles">
+                <!-- Articles will be listed here -->
+                <div id="loading-message" class="text-center py-8">
+                    Loading articles...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Function to load and display articles
+        async function loadArticles() {
+            try {
+                const showDeleted = document.getElementById('show-deleted').checked;
+                const response = await fetch(`/api/posts?showDeleted=${showDeleted}`);
+                const posts = await response.json();
+                
+                const activeArticlesContainer = document.getElementById('active-articles');
+                activeArticlesContainer.innerHTML = '';
+
+                for (const post of posts) {
+                    const article = document.createElement('div');
+                    article.className = `blog-post p-6 border border-gray-200 rounded-lg ${post.isDeleted ? 'bg-gray-50' : 'bg-white/50'} hover:bg-gray-50 transition-all`;
+                    article.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="text-lg mb-1">${post.title}</h4>
+                                <p class="text-sm text-gray-500">${post.date}</p>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    ${post.tags.map(tag => `
+                                        <span class="text-xs bg-gray-100 rounded-md px-2 py-1">${tag}</span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <a href="${post.url}" class="text-gray-600 hover:text-blue-600" target="_blank">View</a>
+                                ${post.isDeleted ? `
+                                    <button onclick="restoreArticle('${post.filename}')" class="text-gray-600 hover:text-green-600">Restore</button>
+                                ` : `
+                                    <button onclick="editArticle('${post.url}')" class="text-gray-600 hover:text-blue-600">Edit</button>
+                                    <button onclick="deleteArticle('${post.filename}')" class="text-gray-600 hover:text-red-600">Delete</button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                    activeArticlesContainer.appendChild(article);
+                }
+
+                // Remove loading message if it exists
+                const loadingMessage = document.getElementById('loading-message');
+                if (loadingMessage) {
+                    loadingMessage.remove();
+                }
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                const activeArticlesContainer = document.getElementById('active-articles');
+                activeArticlesContainer.innerHTML = '<div class="text-center py-8 text-red-600">Error loading articles</div>';
+            }
+        }
+
+        // Function to edit an article
+        function editArticle(url) {
+            window.location.href = `/editor/editor.html?edit=${encodeURIComponent(url)}`;
+        }
+
+        // Function to delete an article
+        async function deleteArticle(filename) {
+            if (!confirm('Are you sure you want to delete this article? It will be moved to the trash folder.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/post/${filename}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadArticles(); // Refresh the list
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error deleting article');
+                }
+            } catch (error) {
+                console.error('Error deleting article:', error);
+                alert('Error deleting article');
+            }
+        }
+
+        async function restoreArticle(filename) {
+            if (!confirm('Are you sure you want to restore this article?')) return;
+            
+            try {
+                const response = await fetch(`/api/post/${filename}/restore`, {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) throw new Error('Failed to restore article');
+                
+                loadArticles(); // Reload the articles list
+            } catch (error) {
+                console.error('Error restoring article:', error);
+                alert('Failed to restore article. Please try again.');
+            }
+        }
+
+        // Add search functionality
+        const searchInput = document.getElementById('search');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const articles = document.querySelectorAll('.blog-post');
+            
+            articles.forEach(article => {
+                const title = article.querySelector('h4').textContent.toLowerCase();
+                const date = article.querySelector('p').textContent.toLowerCase();
+                const tags = Array.from(article.querySelectorAll('.bg-gray-100')).map(tag => tag.textContent.toLowerCase());
+                
+                if (title.includes(searchTerm) || 
+                    date.includes(searchTerm) || 
+                    tags.some(tag => tag.includes(searchTerm))) {
+                    article.style.display = '';
+                } else {
+                    article.style.display = 'none';
+                }
+            });
+        });
+
+        // Add event listener for the show-deleted checkbox
+        document.getElementById('show-deleted').addEventListener('change', loadArticles);
+
+        // Load articles when the page loads
+        document.addEventListener('DOMContentLoaded', loadArticles);
+    </script>
+</body>
+</html>
