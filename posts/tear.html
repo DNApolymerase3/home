@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML Front Matter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    typography: {
+                        DEFAULT: {
+                            css: {
+                                maxWidth: 'none',
+                            },
+                        },
+                    },
+                },
+                plugins: [
+                    function({ addComponents }) {
+                        addComponents({
+                            '.prose': {
+                                'h1': { fontSize: '2em', fontWeight: 'bold', marginBottom: '0.5em', marginTop: '1.5em' },
+                                'h2': { fontSize: '1.5em', fontWeight: 'bold', marginBottom: '0.5em', marginTop: '1.5em' },
+                                'h3': { fontSize: '1.25em', fontWeight: 'bold', marginBottom: '0.5em', marginTop: '1.5em' },
+                                'p': { marginBottom: '1em', lineHeight: '1.6' },
+                                'ul': { listStyle: 'disc', paddingLeft: '2em', marginBottom: '1em' },
+                                'ol': { listStyle: 'decimal', paddingLeft: '2em', marginBottom: '1em' },
+                                'li': { marginBottom: '0.25em' },
+                                'a': { color: '#3b82f6', textDecoration: 'underline' },
+                                'blockquote': { borderLeft: '4px solid #e5e7eb', paddingLeft: '1em', marginBottom: '1em', fontStyle: 'italic', color: '#4b5563' },
+                                'code': { backgroundColor: '#f3f4f6', padding: '0.2em 0.4em', borderRadius: '0.25em', fontSize: '0.875em' },
+                                'pre': { backgroundColor: '#f3f4f6', padding: '1em', borderRadius: '0.5em', marginBottom: '1em', overflow: 'auto' },
+                                'pre code': { backgroundColor: 'transparent', padding: 0, fontSize: '0.875em' },
+                                'strong': { fontWeight: 'bold' },
+                                'em': { fontStyle: 'italic' },
+                                'hr': { marginTop: '2em', marginBottom: '2em', borderColor: '#e5e7eb' },
+                                'table': { width: '100%', marginBottom: '1em', borderCollapse: 'collapse' },
+                                'th,td': { padding: '0.5em', borderBottom: '1px solid #e5e7eb' },
+                                'th': { fontWeight: 'bold', textAlign: 'left' },
+                                'img': { maxWidth: '100%', height: 'auto', marginBottom: '1em' }
+                            }
+                        })
