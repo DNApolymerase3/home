@@ -15,28 +15,104 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        html {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            scroll-behavior: smooth;
+        }
+
+        .nav-item {
+            opacity: 0;
+            animation: popAndJiggle 0.5s ease-out forwards;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item:hover {
+            transform: translate3d(0, -2px, 15px);
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .nav-item:nth-child(2) {
+            animation-delay: 0.8s;
+        }
+
+        .nav-item:nth-child(3) {
+            animation-delay: 1.3s;
+        }
+
+        .content-wrapper {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes popAndJiggle {
+            0% {
+                transform: translate3d(0, 20px, 0);
+                opacity: 0;
+            }
+            40% {
+                transform: translate3d(0, -4px, 0);
+            }
+            60% {
+                transform: translate3d(0, 2px, 0);
+            }
+            80% {
+                transform: translate3d(0, -1px, 0);
+            }
+            100% {
+                transform: translate3d(0, 0, 0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body class="bg-white text-black min-h-screen">
     <nav class="fixed w-full bg-white/80 backdrop-blur-sm z-50">
-        <div class="max-w-[90%] mx-auto px-4 mt-4">
-            <div class="flex justify-between items-center h-16 bg-white/80 backdrop-blur-sm rounded-xl px-12">
-                <a href="index.html" class="text-black hover:text-gray-600 transition-colors">
-                    Home
-                </a>
-                <div class="flex space-x-12">
-                    <a href="resume.html" class="nav-item text-black hover:text-gray-600 transition-colors">Resume</a>
-                    <a href="blog.html" class="nav-item text-black hover:text-gray-600 transition-colors">Notes</a>
-                    <a href="library.html" class="nav-item text-black hover:text-gray-600 transition-colors">Library</a>
+        <div class="max-w-6xl mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="space-x-12">
+                    <a href="index.html" class="nav-item inline-block">home</a>
+                    <a href="resume.html" class="nav-item inline-block">resume</a>
+                    <a href="blog.html" class="nav-item inline-block">notes</a>
+                    <a href="library.html" class="nav-item inline-block">library</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="pt-24 pb-16 px-4 max-w-4xl mx-auto animate-fade-in">
-        <h1 class="text-4xl font-bold mb-8">Resume</h1>
-        <div class="space-y-12">
-            <!-- Add your resume content here -->
-            <p class="text-gray-600">Resume content coming soon...</p>
+    <main class="pt-24 pb-16 px-6">
+        <div class="max-w-4xl mx-auto content-wrapper">
+            <h1 class="text-4xl font-bold mb-8">Resume</h1>
+            <div class="space-y-12">
+                <!-- Add your resume content here -->
+                <p class="text-gray-600">Resume content coming soon...</p>
+            </div>
         </div>
     </main>
 </body>

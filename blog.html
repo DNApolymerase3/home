@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes - Portfolio</title>
+    <title>Notes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -15,29 +15,261 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        html {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            scroll-behavior: smooth;
+        }
+
+        .nav-item {
+            opacity: 0;
+            animation: popAndJiggle 0.5s ease-out forwards;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item:hover {
+            transform: translate3d(0, -2px, 15px);
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item:nth-child(1) { animation-delay: 0.3s; }
+        .nav-item:nth-child(2) { animation-delay: 0.8s; }
+        .nav-item:nth-child(3) { animation-delay: 1.3s; }
+
+        .content-wrapper {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes popAndJiggle {
+            0% { transform: translate3d(0, 20px, 0); opacity: 0; }
+            40% { transform: translate3d(0, -4px, 0); }
+            60% { transform: translate3d(0, 2px, 0); }
+            80% { transform: translate3d(0, -1px, 0); }
+            100% { transform: translate3d(0, 0, 0); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .blog-post {
+            transition: transform 0.2s ease;
+        }
+
+        .blog-post:hover {
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
-<body class="bg-white text-black min-h-screen">
+<body class="bg-white text-black min-h-screen font-mono">
     <nav class="fixed w-full bg-white/80 backdrop-blur-sm z-50">
-        <div class="max-w-[90%] mx-auto px-4 mt-4">
-            <div class="flex justify-between items-center h-16 bg-white/80 backdrop-blur-sm rounded-xl px-12">
-                <a href="index.html" class="text-black hover:text-gray-600 transition-colors">
-                    Home
-                </a>
-                <div class="flex space-x-12">
-                    <a href="resume.html" class="nav-item text-black hover:text-gray-600 transition-colors">Resume</a>
-                    <a href="blog.html" class="nav-item text-black hover:text-gray-600 transition-colors">Notes</a>
-                    <a href="library.html" class="nav-item text-black hover:text-gray-600 transition-colors">Library</a>
+        <div class="max-w-6xl mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="space-x-12">
+                    <a href="index.html" class="nav-item inline-block">home</a>
+                    <a href="resume.html" class="nav-item inline-block">resume</a>
+                    <a href="blog.html" class="nav-item inline-block">notes</a>
+                    <a href="library.html" class="nav-item inline-block">library</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="pt-24 pb-16 px-4 max-w-4xl mx-auto animate-fade-in">
-        <h1 class="text-4xl font-bold mb-8">Blog</h1>
-        <div class="space-y-12">
-            <!-- Add your blog posts here -->
-            <p class="text-gray-600">Blog posts coming soon...</p>
+    <main class="pt-24 pb-16 px-6">
+        <div class="max-w-4xl mx-auto content-wrapper">
+            <!-- Search and Sort Section -->
+            <div class="flex justify-between items-center mb-8">
+                <div class="relative flex-grow max-w-lg">
+                    <input type="text" id="search" placeholder="search projects..." 
+                           class="w-full px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 bg-white/50">
+                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </div>
+                <select id="sort" class="px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 bg-white/50">
+                    <option value="date-desc">Newest First</option>
+                    <option value="date-asc">Oldest First</option>
+                    <option value="title-asc">Title A-Z</option>
+                    <option value="title-desc">Title Z-A</option>
+                </select>
+            </div>
+
+            <!-- Blog Posts -->
+            <div class="space-y-8" id="posts-container">
+                <!-- Example blog post format -->
+                <article class="blog-post border-b border-gray-100 pb-8">
+                    <h2 class="text-xl mb-1">
+                        <a href="#" class="hover:underline">propositional logic</a>
+                    </h2>
+                    <p class="text-sm text-gray-600 mb-2">truth tables; the tragic extent of my failings with regard to static compilation</p>
+                    <div class="flex items-center space-x-4 text-sm">
+                        <span class="text-gray-500">tagged with</span>
+                        <span class="px-2 py-1 bg-gray-100 rounded-md">rust</span>
+                        <span class="px-2 py-1 bg-gray-100 rounded-md">web development</span>
+                        <span class="px-2 py-1 bg-gray-100 rounded-md">typescript</span>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-400">20th september, 2024</div>
+                </article>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-12 flex justify-center space-x-4">
+                <button id="prev-page" class="px-4 py-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50">Previous</button>
+                <span id="page-info" class="px-4 py-2">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+                <button id="next-page" class="px-4 py-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50">Next</button>
+            </div>
         </div>
     </main>
+
+    <script>
+        // Blog posts data
+        const posts = [
+            {
+                title: "propositional logic",
+                description: "truth tables; the tragic extent of my failings with regard to static compilation",
+                tags: ["rust", "web development", "typescript"],
+                date: "2024-09-20",
+                url: "#"
+            },
+            {
+                title: "wiggy",
+                description: "marginal improvements to scheduling infrastructure; hacky React rendering",
+                tags: ["web development"],
+                date: "2024-04-06",
+                url: "#"
+            },
+            {
+                title: "minecraft modding",
+                description: "attempts at modpack curation; a descent into madness",
+                tags: ["java"],
+                date: "2023-12-30",
+                url: "#"
+            }
+            // Add more posts here
+        ];
+
+        // State
+        let currentPage = 1;
+        const postsPerPage = 10;
+        let filteredPosts = [...posts];
+
+        // Functions
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDate();
+            const month = date.toLocaleString('default', { month: 'long' });
+            const year = date.getFullYear();
+            return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
+        }
+
+        function getOrdinalSuffix(day) {
+            if (day > 3 && day < 21) return 'th';
+            switch (day % 10) {
+                case 1: return 'st';
+                case 2: return 'nd';
+                case 3: return 'rd';
+                default: return 'th';
+            }
+        }
+
+        function renderPosts() {
+            const startIndex = (currentPage - 1) * postsPerPage;
+            const endIndex = startIndex + postsPerPage;
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '';
+
+            filteredPosts.slice(startIndex, endIndex).forEach(post => {
+                const article = document.createElement('article');
+                article.className = 'blog-post border-b border-gray-100 pb-8';
+                article.innerHTML = `
+                    <h2 class="text-xl mb-1">
+                        <a href="${post.url}" class="hover:underline">${post.title}</a>
+                    </h2>
+                    <p class="text-sm text-gray-600 mb-2">${post.description}</p>
+                    <div class="flex items-center space-x-4 text-sm">
+                        <span class="text-gray-500">tagged with</span>
+                        ${post.tags.map(tag => `<span class="px-2 py-1 bg-gray-100 rounded-md">${tag}</span>`).join('')}
+                    </div>
+                    <div class="mt-2 text-sm text-gray-400">${formatDate(post.date)}</div>
+                `;
+                container.appendChild(article);
+            });
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+            document.getElementById('current-page').textContent = currentPage;
+            document.getElementById('total-pages').textContent = totalPages;
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages;
+        }
+
+        function filterPosts() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            filteredPosts = posts.filter(post => 
+                post.title.toLowerCase().includes(searchTerm) ||
+                post.description.toLowerCase().includes(searchTerm) ||
+                post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+            currentPage = 1;
+            sortPosts();
+        }
+
+        function sortPosts() {
+            const sortValue = document.getElementById('sort').value;
+            switch(sortValue) {
+                case 'date-desc':
+                    filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    break;
+                case 'date-asc':
+                    filteredPosts.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    break;
+                case 'title-asc':
+                    filteredPosts.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'title-desc':
+                    filteredPosts.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+            }
+            renderPosts();
+        }
+
+        // Event Listeners
+        document.getElementById('search').addEventListener('input', filterPosts);
+        document.getElementById('sort').addEventListener('change', sortPosts);
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPosts();
+            }
+        });
+        document.getElementById('next-page').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPosts();
+            }
+        });
+
+        // Initial render
+        renderPosts();
+    </script>
 </body>
 </html>
