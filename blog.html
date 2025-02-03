@@ -111,20 +111,9 @@
 
             <!-- Blog Posts -->
             <div class="space-y-8" id="posts-container">
-                <!-- Example blog post format -->
-                <article class="blog-post border-b border-gray-100 pb-8">
-                    <h2 class="text-xl mb-1">
-                        <a href="#" class="hover:underline">propositional logic</a>
-                    </h2>
-                    <p class="text-sm text-gray-600 mb-2">truth tables; the tragic extent of my failings with regard to static compilation</p>
-                    <div class="flex items-center space-x-4 text-sm">
-                        <span class="text-gray-500">tagged with</span>
-                        <span class="px-2 py-1 bg-gray-100 rounded-md">rust</span>
-                        <span class="px-2 py-1 bg-gray-100 rounded-md">web development</span>
-                        <span class="px-2 py-1 bg-gray-100 rounded-md">typescript</span>
-                    </div>
-                    <div class="mt-2 text-sm text-gray-400">20th september, 2024</div>
-                </article>
+                <div id="loading-message" class="text-center py-8">
+                    Loading posts...
+                </div>
             </div>
 
             <!-- Pagination -->
@@ -137,38 +126,75 @@
     </main>
 
     <script>
-        // Blog posts data
-        const posts = [
-            {
-                title: "propositional logic",
-                description: "truth tables; the tragic extent of my failings with regard to static compilation",
-                tags: ["rust", "web development", "typescript"],
-                date: "2024-09-20",
-                url: "#"
-            },
-            {
-                title: "wiggy",
-                description: "marginal improvements to scheduling infrastructure; hacky React rendering",
-                tags: ["web development"],
-                date: "2024-04-06",
-                url: "#"
-            },
-            {
-                title: "minecraft modding",
-                description: "attempts at modpack curation; a descent into madness",
-                tags: ["java"],
-                date: "2023-12-30",
-                url: "#"
-            }
-            // Add more posts here
-        ];
-
         // State
         let currentPage = 1;
         const postsPerPage = 10;
-        let filteredPosts = [...posts];
+        let allPosts = [];
+        let filteredPosts = [];
 
         // Functions
+        async function fetchPostMetadata(url) {
+            try {
+                const response = await fetch(url);
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Extract metadata from the article
+                const title = doc.querySelector('h1').textContent;
+                const description = doc.querySelector('.prose p').textContent.trim();
+                const tags = Array.from(doc.querySelectorAll('header .bg-gray-100'))
+                    .map(tag => tag.textContent.trim());
+                const dateStr = doc.querySelector('header .text-gray-600').textContent
+                    .replace('Published on ', '');
+                
+                return {
+                    title,
+                    description,
+                    tags,
+                    date: new Date(dateStr).toISOString().split('T')[0],
+                    url
+                };
+            } catch (error) {
+                console.error(`Error fetching metadata from ${url}:`, error);
+                return null;
+            }
+        }
+
+        async function loadPosts() {
+            try {
+                const postsDir = 'posts/';
+                const posts = [];
+                
+                // For now, manually list the posts until we set up directory listing
+                const postFiles = [
+                    'posts/propositional-logic.html'
+                    // Add new posts here as they're created
+                ];
+
+                // Fetch metadata from each post
+                for (const url of postFiles) {
+                    const metadata = await fetchPostMetadata(url);
+                    if (metadata) {
+                        posts.push(metadata);
+                    }
+                }
+
+                allPosts = posts;
+                filteredPosts = [...posts];
+                
+                // Initial sort by date
+                sortPosts();
+                
+                // Hide loading message
+                document.getElementById('loading-message').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                document.getElementById('loading-message').innerHTML = 
+                    '<p class="text-red-500">Error loading posts. Please try again later.</p>';
+            }
+        }
+
         function formatDate(dateStr) {
             const date = new Date(dateStr);
             const day = date.getDate();
@@ -192,6 +218,11 @@
             const endIndex = startIndex + postsPerPage;
             const container = document.getElementById('posts-container');
             container.innerHTML = '';
+
+            if (filteredPosts.length === 0) {
+                container.innerHTML = '<p class="text-center py-8">No posts found.</p>';
+                return;
+            }
 
             filteredPosts.slice(startIndex, endIndex).forEach(post => {
                 const article = document.createElement('article');
@@ -223,7 +254,7 @@
 
         function filterPosts() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            filteredPosts = posts.filter(post => 
+            filteredPosts = allPosts.filter(post => 
                 post.title.toLowerCase().includes(searchTerm) ||
                 post.description.toLowerCase().includes(searchTerm) ||
                 post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
@@ -268,8 +299,8 @@
             }
         });
 
-        // Initial render
-        renderPosts();
+        // Initial load
+        loadPosts();
     </script>
 </body>
 </html>
