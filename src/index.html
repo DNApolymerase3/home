@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link href="output.css" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scrollbar-gutter: stable;
+        }
+    </style>
+</head>
+<body>
+    <div id="page-container">
+        <!-- Navigation -->
+        <nav class="fixed w-full z-50">
+            <div class="max-w-[90%] mx-auto px-4 mt-4">
+                <div class="flex justify-between items-center h-16 bg-white/80 backdrop-blur-sm rounded-xl px-12">
+                    <a href="#home" class="text-black hover:text-gray-600 transition-colors">
+                        Home
+                    </a>
+                    <div class="flex space-x-12">
+                        <a href="resume.html" class="nav-item text-black hover:text-gray-600 transition-colors">Resume</a>
+                        <a href="blog.html" class="nav-item text-black hover:text-gray-600 transition-colors">Notes</a>
+                        <a href="library.html" class="nav-item text-black hover:text-gray-600 transition-colors">Library</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <div id="sections-container">
+                <!-- Hero Section -->
+                <section id="home" class="h-screen w-full flex items-center justify-between bg-black text-white">
+                    <div class="content-wrapper w-1/2 pl-24">
+                        <h1 class="text-6xl font-bold mb-2">
+                            Hi!
+                        </h1>
+                        <h2 class="text-6xl font-bold mb-6 text-gray-400">
+                            I'm tristan
+                        </h2>
+                        <p class="text-xl text-gray-400 mb-8 flex items-center">
+                            welcome <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/CG_Heart.gif" alt="heart" class="inline-block h-4 ml-1">
+                        </p>
+                        <a href="#projects" class="inline-block border border-white px-6 py-3 hover:bg-white hover:text-black transition-colors rounded-xl">
+                            readme.md
+                        </a>
+                    </div>
+                    <div class="w-1/2 pr-12 pt-16">
+                        <div class="border border-gray-600 rounded-xl h-[calc(75vh-7rem)] bg-black/50 backdrop-blur-sm overflow-hidden w-full">
+                            <div class="h-8 border-b border-gray-600 flex items-center px-4 bg-black/60">
+                                <div class="flex space-x-2">
+                                    <div class="w-3 h-3 rounded-full bg-gray-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-gray-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-gray-500"></div>
+                                </div>
+                            </div>
+                            <div class="p-6 font-mono text-sm text-gray-300">
+                                <div class="mb-2">$ whoami</div>
+                                <div class="mb-4">tristan</div>
+                                <div class="mb-2">$ cd ~/projects</div>
+                                <div class="mb-4 text-gray-400">
+                                    2025-02-02 18:20:51 ; project 1<br>
+                                    2025-02-02 18:20:51 ; project 2<br>
+                                    2025-02-02 18:20:51 ; project 3
+                                </div>
+                                <div class="mb-2">$ cat welcome.txt</div>
+                                <div class="mb-4">
+                                    My resume, clinical and project notes, and my library are accessible through the nav bar above.<br><br>
+                                    An overview of my current projects and my contact info are available in the two sections below :)
+                                </div>
+                                <div class="animate-pulse">$ _</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Projects Section -->
+                <section id="projects" class="h-screen w-full flex items-center bg-white text-black">
+                    <div class="content-wrapper w-full px-24">
+                        <h2 class="text-4xl font-bold mb-16">Current Projects</h2>
+                        <div class="grid grid-cols-3 gap-8 max-w-[90%] mx-auto">
+                            <!-- Project Card 1 -->
+                            <div class="border border-black p-6 rounded-xl hover:shadow-lg transition-shadow">
+                                <h3 class="text-xl font-bold mb-4">Project One</h3>
+                                <p class="text-gray-600 mb-4">Description of your first project</p>
+                                <a href="#" class="text-black hover:text-gray-600 transition-colors">Learn more →</a>
+                            </div>
+                            <!-- Project Card 2 -->
+                            <div class="border border-black p-6 rounded-xl hover:shadow-lg transition-shadow">
+                                <h3 class="text-xl font-bold mb-4">Project Two</h3>
+                                <p class="text-gray-600 mb-4">Description of your second project</p>
+                                <a href="#" class="text-black hover:text-gray-600 transition-colors">Learn more →</a>
+                            </div>
+                            <!-- Project Card 3 -->
+                            <div class="border border-black p-6 rounded-xl hover:shadow-lg transition-shadow">
+                                <h3 class="text-xl font-bold mb-4">Project Three</h3>
+                                <p class="text-gray-600 mb-4">Description of your third project</p>
+                                <a href="#" class="text-black hover:text-gray-600 transition-colors">Learn more →</a>
+                            </div>
+                            <!-- Project Card 4 -->
+                            <div class="border border-black p-6 rounded-xl hover:shadow-lg transition-shadow">
+                                <h3 class="text-xl font-bold mb-4">Project Four</h3>
+                                <p class="text-gray-600 mb-4">Description of your fourth project</p>
+                                <a href="#" class="text-black hover:text-gray-600 transition-colors">Learn more →</a>
+                            </div>
+                            <!-- Project Card 5 -->
+                            <div class="border border-black p-6 rounded-xl hover:shadow-lg transition-shadow">
+                                <h3 class="text-xl font-bold mb-4">Project Five</h3>
+                                <p class="text-gray-600 mb-4">Description of your fifth project</p>
+                                <a href="#" class="text-black hover:text-gray-600 transition-colors">Learn more →</a>
+                            </div>
+                            <!-- Project Card 6 -->
+                            <div class="border border-black p-6 rounded-xl hover:shadow-lg transition-shadow">
+                                <h3 class="text-xl font-bold mb-4">Project Six</h3>
+                                <p class="text-gray-600 mb-4">Description of your sixth project</p>
+                                <a href="#" class="text-black hover:text-gray-600 transition-colors">Learn more →</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact Section -->
+                <section id="contact" class="h-screen w-full flex flex-col justify-end bg-black text-white">
+                    <!-- Images Section -->
+                    <div class="w-full bg-black flex-grow flex items-center">
+                        <div class="w-full">
+                            <div class="max-w-[90rem] mx-auto px-4">
+                                <div class="flex mb-20 justify-center">
+                                    <h3 class="text-white text-3xl w-60 text-right mr-16">cool med pics</h3>
+                                    <div class="grid grid-cols-3 gap-10 max-w-[72rem]">
+                                        <div class="aspect-video rounded-xl overflow-hidden cursor-pointer">
+                                            <img src="images/img1.jpg" alt="Medical image 1" class="w-full h-full object-cover" loading="lazy" onclick="openModal(this.src)">
+                                        </div>
+                                        <div class="aspect-video rounded-xl overflow-hidden cursor-pointer">
+                                            <img src="images/img2.jpg" alt="Medical image 2" class="w-full h-full object-cover" loading="lazy" onclick="openModal(this.src)">
+                                        </div>
+                                        <div class="aspect-video rounded-xl overflow-hidden cursor-pointer">
+                                            <img src="images/img3.jpg" alt="Medical image 3" class="w-full h-full object-cover" loading="lazy" onclick="openModal(this.src)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <h3 class="text-white text-3xl w-60 text-right mr-16">defects</h3>
+                                    <div class="grid grid-cols-3 gap-10 max-w-[72rem]">
+                                        <div class="aspect-video rounded-xl overflow-hidden cursor-pointer">
+                                            <img src="images/img4.jpeg" alt="Defect image 1" class="w-full h-full object-cover" loading="lazy" onclick="openModal(this.src)">
+                                        </div>
+                                        <div class="aspect-video rounded-xl overflow-hidden cursor-pointer">
+                                            <img src="images/img5.jpeg" alt="Defect image 2" class="w-full h-full object-cover" loading="lazy" onclick="openModal(this.src)">
+                                        </div>
+                                        <div class="aspect-video rounded-xl overflow-hidden cursor-pointer">
+                                            <img src="images/img6.jpeg" alt="Defect image 3" class="w-full h-full object-cover" loading="lazy" onclick="openModal(this.src)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Contact Info Bar -->
+                    <div class="w-full bg-white/80 backdrop-blur-sm h-16">
+                        <div class="max-w-6xl mx-auto px-4 h-full flex flex-col justify-center items-center">
+                            <div class="text-black text-sm mb-1">Stanford School of Medicine + LPCH, Case Western Reserve University</div>
+                            <div class="text-gray-600 text-sm">
+                                <span class="mx-3">(650)-294-0982</span>
+                                <span class="text-gray-400">|</span>
+                                <span class="mx-3">trperry@stanfordchildrens.org</span>
+                                <span class="text-gray-400">|</span>
+                                <span class="mx-3">palo alto</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="imageModal" class="fixed inset-0 invisible z-50" onclick="closeModal()">
+        <div class="absolute inset-0 bg-black opacity-0 transition-opacity duration-200"></div>
+        <div class="fixed inset-0 flex items-center justify-center pointer-events-none">
+            <img id="modalImage" class="max-h-[90vh] max-w-[90vw] object-contain opacity-0 transition-opacity duration-200 pointer-events-auto" src="" alt="Full size image">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            let currentSection = 0;
+            
+            // Set initial active section
+            sections[0].classList.add('active');
+            const firstContentWrapper = sections[0].querySelector('.content-wrapper');
+            if (firstContentWrapper) {
+                firstContentWrapper.classList.add('visible');
+            }
+
+            // Function to update active section
+            function updateActiveSection() {
+                const scrollPosition = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const sectionIndex = Math.round(scrollPosition / windowHeight);
+                
+                if (sectionIndex !== currentSection && sectionIndex >= 0 && sectionIndex < sections.length) {
+                    // Remove active class from current section
+                    sections[currentSection].classList.remove('active');
+                    const oldContent = sections[currentSection].querySelector('.content-wrapper');
+                    if (oldContent) {
+                        oldContent.classList.remove('visible');
+                    }
+
+                    // Add active class to new section
+                    sections[sectionIndex].classList.add('active');
+                    const newContent = sections[sectionIndex].querySelector('.content-wrapper');
+                    if (newContent) {
+                        newContent.classList.add('visible');
+                    }
+
+                    currentSection = sectionIndex;
+                }
+            }
+
+            // Listen for scroll events
+            window.addEventListener('scroll', () => {
+                requestAnimationFrame(updateActiveSection);
+            });
+        });
+
+        let scrollPosition = 0;
+        const pageContainer = document.getElementById('page-container');
+
+        function openModal(imgSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const overlay = modal.querySelector('.bg-black');
+            
+            modal.classList.remove('invisible');
+            modalImg.src = imgSrc;
+            
+            requestAnimationFrame(() => {
+                overlay.classList.add('opacity-90');
+                modalImg.classList.add('opacity-100');
+            });
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const overlay = modal.querySelector('.bg-black');
+            
+            overlay.classList.remove('opacity-90');
+            modalImg.classList.remove('opacity-100');
+            
+            setTimeout(() => {
+                modal.classList.add('invisible');
+            }, 200);
+        }
+    </script>
+</body>
+</html>
